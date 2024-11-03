@@ -63,7 +63,7 @@ const Chat: FC<IChatProps> = ({
 
   const valid = () => {
     if (!query || query.trim() === '') {
-      logError('Message cannot be empty')
+      logError('消息不能为空')
       return false
     }
     return true
