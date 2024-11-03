@@ -12,6 +12,8 @@
     "prepare": "husky install ./.husky"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
     "@floating-ui/react": "^0.26.2",
     "@formatjs/intl-localematcher": "^0.2.32",
     "@headlessui/react": "^1.7.13",
@@ -19,6 +21,7 @@
     "@mdx-js/loader": "^2.3.0",
     "@mdx-js/react": "^2.3.0",
     "@monaco-editor/react": "^4.6.0",
+    "@mui/material": "^6.1.6",
     "@tailwindcss/line-clamp": "^0.4.2",
     "@types/node": "18.15.0",
     "@types/react": "18.0.28",

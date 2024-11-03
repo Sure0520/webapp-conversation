@@ -16,14 +16,17 @@ import ChatImageUploader from '@/app/components/base/image-uploader/chat-image-u
 import ImageList from '@/app/components/base/image-uploader/image-list'
 import { useImageFiles } from '@/app/components/base/image-uploader/hooks'
 
+/**
+ * 定义 Chat 组件的 props 类型
+ */
 export type IChatProps = {
   chatList: ChatItem[]
   /**
-   * Whether to display the editing area and rating status
+   * 是否显示编辑区域和评分状态
    */
   feedbackDisabled?: boolean
   /**
-   * Whether to display the input area
+   * 是否显示输入区域
    */
   isHideSendInput?: boolean
   onFeedback?: FeedbackFunc
@@ -35,32 +38,51 @@ export type IChatProps = {
   visionConfig?: VisionSettings
 }
 
-const Chat: FC<IChatProps> = ({
-  chatList,
-  feedbackDisabled = false,
-  isHideSendInput = false,
-  onFeedback,
-  checkCanSend,
-  onSend = () => { },
-  useCurrentUserAvatar,
-  isResponding,
-  controlClearQuery,
-  visionConfig,
-}) => {
+/**
+ * Chat 组件
+ * @param props 包含聊天列表、反馈、发送消息等功能的 props
+ */
+const Chat: FC<IChatProps> = (props) => {
+  const {
+    chatList,
+    feedbackDisabled = false,
+    isHideSendInput = false,
+    onFeedback,
+    checkCanSend,
+    onSend = () => { },
+    useCurrentUserAvatar,
+    isResponding,
+    controlClearQuery,
+    visionConfig,
+  } = props
+
   const { t } = useTranslation()
   const { notify } = Toast
   const isUseInputMethod = useRef(false)
 
   const [query, setQuery] = React.useState('')
+
+  /**
+   * 处理内容变化事件
+   * @param e 事件对象
+   */
   const handleContentChange = (e: any) => {
     const value = e.target.value
     setQuery(value)
   }
 
+  /**
+   * 记录错误日志
+   * @param message 错误信息
+   */
   const logError = (message: string) => {
     notify({ type: 'error', message, duration: 3000 })
   }
 
+  /**
+   * 验证消息是否有效
+   * @returns 消息是否有效
+   */
   const valid = () => {
     if (!query || query.trim() === '') {
       logError('消息不能为空')
@@ -69,10 +91,14 @@ const Chat: FC<IChatProps> = ({
     return true
   }
 
+  /**
+   * 当控制清除查询的值发生变化时，清空查询内容
+   */
   useEffect(() => {
     if (controlClearQuery)
       setQuery('')
   }, [controlClearQuery])
+
   const {
     files,
     onUpload,
@@ -83,6 +109,9 @@ const Chat: FC<IChatProps> = ({
     onClear,
   } = useImageFiles()
 
+  /**
+   * 处理发送消息
+   */
   const handleSend = () => {
     if (!valid() || (checkCanSend && !checkCanSend()))
       return
@@ -100,15 +129,23 @@ const Chat: FC<IChatProps> = ({
     }
   }
 
+  /**
+   * 处理键盘抬起事件
+   * @param e 事件对象
+   */
   const handleKeyUp = (e: any) => {
     if (e.code === 'Enter') {
       e.preventDefault()
-      // prevent send message when using input method enter
+      // 防止在使用输入法时按下回车键发送消息
       if (!e.shiftKey && !isUseInputMethod.current)
         handleSend()
     }
   }
 
+  /**
+   * 处理键盘按下事件
+   * @param e 事件对象
+   */
   const handleKeyDown = (e: any) => {
     isUseInputMethod.current = e.nativeEvent.isComposing
     if (e.code === 'Enter' && !e.shiftKey) {
@@ -118,8 +155,9 @@ const Chat: FC<IChatProps> = ({
   }
 
   return (
-    <div className={cn(!feedbackDisabled && 'px-3.5', 'h-full')}>
-      {/* Chat List */}
+    <div className={cn(!feedbackDisabled && 'px-3.5', 'h-full')}> {/* 主容器 */}
+
+      {/* 聊天列表 */}
       <div className="h-full space-y-[30px]">
         {chatList.map((item) => {
           if (item.isAnswer) {
@@ -143,14 +181,15 @@ const Chat: FC<IChatProps> = ({
           )
         })}
       </div>
+
       {
         !isHideSendInput && (
-          <div className={cn(!feedbackDisabled && '!left-3.5 !right-3.5', 'absolute z-10 bottom-0 left-0 right-0')}>
-            <div className='p-[5.5px] max-h-[150px] bg-white border-[1.5px] border-gray-200 rounded-xl overflow-y-auto'>
+          <div className={cn(!feedbackDisabled && '!left-3.5 !right-3.5', 'absolute z-10 bottom-0 left-0 right-0')}> {/* 输入区域容器 */}
+            <div className='p-[5.5px] max-h-[150px] bg-white border-[1.5px] border-gray-200 rounded-xl overflow-y-auto'> {/* 输入区域 */}
               {
                 visionConfig?.enabled && (
                   <>
-                    <div className='absolute bottom-2 left-2 flex items-center'>
+                    <div className='absolute bottom-2 left-2 flex items-center'> {/* 图片上传按钮 */}
                       <ChatImageUploader
                         settings={visionConfig}
                         onUpload={onUpload}
@@ -158,7 +197,7 @@ const Chat: FC<IChatProps> = ({
                       />
                       <div className='mx-1 w-[1px] h-4 bg-black/5' />
                     </div>
-                    <div className='pl-[52px]'>
+                    <div className='pl-[52px]'> {/* 已上传图片列表 */}
                       <ImageList
                         list={files}
                         onRemove={onRemove}
@@ -171,17 +210,14 @@ const Chat: FC<IChatProps> = ({
                 )
               }
               <Textarea
-                className={`
-                  block w-full px-2 pr-[118px] py-[7px] leading-5 max-h-none text-sm text-gray-700 outline-none appearance-none resize-none
-                  ${visionConfig?.enabled && 'pl-12'}
-                `}
+                className={`block w-full px-2 pr-[118px] py-[7px] leading-5 max-h-none text-sm text-gray-700 outline-none appearance-none resize-none ${visionConfig?.enabled && 'pl-12'}`}
                 value={query}
                 onChange={handleContentChange}
                 onKeyUp={handleKeyUp}
                 onKeyDown={handleKeyDown}
                 autoSize
-              />
-              <div className="absolute bottom-2 right-2 flex items-center h-8">
+              /> {/* 文本输入框 */}
+              <div className="absolute bottom-2 right-2 flex items-center h-8"> {/* 发送按钮和字符计数器 */}
                 <div className={`${s.count} mr-4 h-5 leading-5 text-sm bg-gray-50 text-gray-500`}>{query.trim().length}</div>
                 <Tooltip
                   selector='send-tip'
