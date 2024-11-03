@@ -54,7 +54,7 @@ const Sidebar: FC<ISidebarProps> = ({
     >
       {/* 上半部分 - 树形列表 */}
       <div className="flex-1">
-        <TreeList nodes={treeNodes} onNodeClick={(id) => console.log(`Node clicked: ${id}`)} />
+        <TreeList />
       </div>
 
       {/* 下半部分 - 原有内容 */}

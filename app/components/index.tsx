@@ -24,26 +24,6 @@ import type { Annotation as AnnotationType } from '@/types/log'
 import { addFileInfos, sortAgentSorts } from '@/utils/tools'
 
 const Main: FC = () => {
-  const treeNodes = [
-    {
-      id: '1',
-      name: '个人',
-      children: [
-        {
-          id: '1.1',
-          name: '1.1'
-        },
-        {
-          id: '1.2',
-          name: '1.2'
-        }
-      ]
-    },
-    {
-      id: '2',
-      name: '制度'
-    }
-  ];
   const { t } = useTranslation()
   const media = useBreakpoints()
   const isMobile = media === MediaType.mobile
@@ -619,7 +599,6 @@ const Main: FC = () => {
         onCurrentIdChange={handleConversationIdChange}
         currentId={currConversationId}
         copyRight={APP_INFO.copyright || APP_INFO.title}
-        treeNodes={treeNodes}
       />
     )
   }
